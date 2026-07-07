@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="CO-Calib is a robust multi-fisheye calibration-data construction framework built around observation-quality analysis, learning-based target detection, and error-analysis-guided frame selection.">
+  <title>CO-Calib: Observation Quality Matters</title>
+  <link rel="stylesheet" href="./static/site.css">
+</head>
+<body>
+  <header class="site-nav" aria-label="Primary navigation">
+    <a class="brand" href="#top">CO-Calib</a>
+    <nav>
+      <a href="#results">Results</a>
+      <a href="#visualization">Visualizations</a>
+      <a href="#bibtex">BibTeX</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <picture>
+        <source srcset="./assets/hero-page-2600.jpg" type="image/jpeg">
+        <img src="./assets/hero-page-2600.jpg" alt="Multi-fisheye calibration observations with checkerboard targets across stereo and hex camera rigs.">
+      </picture>
+      <div class="hero-shade"></div>
+      <div class="hero-content">
+        <p class="eyebrow">Robust Multi-Fisheye Calibration</p>
+        <h1 id="hero-title">CO-Calib</h1>
+        <p class="hero-subtitle">Observation Quality Matters: Robust Multi-Fisheye Calibration via Failure-Oriented Analysis</p>
+        <div class="hero-actions" aria-label="Project links">
+          <a href="#visualization">Explore Extrinsics</a>
+          <span aria-disabled="true">Paper Link Soon</span>
+          <span aria-disabled="true">Code Release Soon</span>
+        </div>
+        <dl class="hero-metrics" aria-label="Key results">
+          <div>
+            <dt>99.3%</dt>
+            <dd>Synthetic SR</dd>
+          </div>
+          <div>
+            <dt>3.69mm / 0.111&deg;</dt>
+            <dd>Synthetic ATE</dd>
+          </div>
+          <div>
+            <dt>25/25</dt>
+            <dd>Real-world stereo SR</dd>
+          </div>
+          <div>
+            <dt>10/10</dt>
+            <dd>Real-world Hex-Fisheye SR</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="intro-section">
+      <div class="section-inner intro-grid">
+        <div>
+          <p class="eyebrow">Failure-Oriented Analysis</p>
+          <h2>Observations should guide optimization, not merely fill the image.</h2>
+        </div>
+        <p>CO-Calib shows that multi-fisheye calibration failures are governed by whether observations make intrinsic initialization well conditioned. Limited radial span couples focal scale with fisheye projection-shape parameters, producing ambiguous updates. Our detector and error-analysis-guided selector construct frames that provide stable, separable constraints for the existing optimization backend.</p>
+      </div>
+    </section>
+
+    <section class="dataset-section" id="dataset">
+      <div class="section-inner">
+        <div class="section-heading">
+          <p class="eyebrow">Synthetic Dataset</p>
+          <h2>1,600 sequences of synthetic fisheye stereo data</h2>
+          <p>The benchmark spans wide lens distortion and stereo arrangement diversity by combining multiple fields of view and yaw rotations, yielding controlled calibration sequences for failure-oriented analysis.</p>
+        </div>
+        <div class="dataset-stats" aria-label="Synthetic dataset diversity">
+          <div>
+            <strong><span class="stat-number">4</span><span class="stat-name">FoVs</span></strong>
+            <span class="stat-values">180 / 200 / 220 / 240 deg</span>
+          </div>
+          <div>
+            <strong><span class="stat-number">4</span><span class="stat-name">yaw rotations</span></strong>
+            <span class="stat-values">0 / 60 / 90 / 120 deg</span>
+          </div>
+          <div>
+            <strong><span class="stat-number">16</span><span class="stat-name">configurations</span></strong>
+            <span class="stat-values">100 sequences x 480 stereo frames</span>
+          </div>
+        </div>
+        <figure class="wide-figure">
+          <img src="./assets/synthetic-dataset.gif" alt="Looping synthetic fisheye stereo dataset visualization.">
+          <figcaption>Representative synthetic fisheye stereo observations across FoV and yaw configurations.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="results-section" id="results">
+      <div class="section-inner results-grid">
+        <div>
+          <p class="eyebrow">Results</p>
+          <h2>Higher Success Rate on Synthetic Stereo Fisheye Benchmark</h2>
+          <p>Across the 4 FoV x 4 yaw synthetic stereo benchmark, CO-Calib keeps calibration success high in wide-FoV regimes where Kalibr degrades, raising overall success from 68.1% to 99.3%.</p>
+        </div>
+        <div class="result-bars" aria-label="Success rate summary">
+          <div class="bar-row">
+            <span>CO-Calib</span>
+            <div><i style="width: 99.3%"></i></div>
+            <strong>99.3%</strong>
+          </div>
+          <div class="bar-row">
+            <span>Kalibr</span>
+            <div><i style="width: 68.1%"></i></div>
+            <strong>68.1%</strong>
+          </div>
+          <div class="bar-row">
+            <span>Random subset</span>
+            <div><i style="width: 30.9%"></i></div>
+            <strong>30.9%</strong>
+          </div>
+          <div class="bar-row">
+            <span>BA-only</span>
+            <div><i style="width: 13.5%"></i></div>
+            <strong>13.5%</strong>
+          </div>
+        </div>
+        <figure class="benchmark-figure">
+          <img src="./assets/stereo-benchmark.png" alt="Synthetic stereo fisheye benchmark success rate comparison between Kalibr and CO-Calib across FoV and yaw configurations.">
+          <figcaption>Synthetic stereo fisheye benchmark success rates across FoV and yaw configurations.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="visualization-section" id="visualization">
+      <div class="section-inner">
+        <div class="section-heading">
+          <p class="eyebrow">Real-world experiments</p>
+          <h2>Two rig-level views for comparing calibration outcomes</h2>
+          <p>CO-Calib achieves higher calibration success rates and more consistent extrinsic estimates on both real-world Hex-Fisheye and stereo fisheye rigs, producing stable results where standard pipelines become unreliable.</p>
+        </div>
+      </div>
+      <div class="visualization-frame-wrap">
+        <iframe title="Interactive real-world extrinsic visualization" src="./pages/extrinsics-showcase.html?v=20260708-view" loading="lazy"></iframe>
+      </div>
+      <div class="real-system-gallery" aria-label="Real-world camera systems">
+        <figure>
+          <img src="./assets/real-hex-fisheye.jpg?v=20260708-equal-h" alt="Hex-Fisheye real-world camera system.">
+          <figcaption>Hex-Fisheye real-world rig used in the experiments.</figcaption>
+        </figure>
+        <figure>
+          <img src="./assets/real-stereo-fisheye.jpg?v=20260708-equal-h" alt="Stereo fisheye real-world camera system.">
+          <figcaption>Stereo fisheye real-world rig used in the experiments.</figcaption>
+        </figure>
+      </div>
+      <noscript>
+        <div class="section-inner">
+          <img class="fallback-preview" src="./assets/extrinsics-showcase-preview.png" alt="Preview of the interactive extrinsic visualization.">
+        </div>
+      </noscript>
+    </section>
+
+    <section class="bibtex-section" id="bibtex">
+      <div class="section-inner">
+        <p class="eyebrow">Citation</p>
+        <h2>BibTeX</h2>
+        <pre><code>@article{liu2026observation,
+  title={Observation Quality Matters: Robust Multi-Fisheye Calibration via Failure-Oriented Analysis},
+  author={Liu, Peize and Tong, Zhe and Feng, Chen and Shen, Shaojie},
+  journal={IEEE Robotics and Automation Letters},
+  year={2026}
+}</code></pre>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>CO-Calib</span>
+    <span>HKUST Aerial Robotics Group</span>
+  </footer>
+</body>
+</html>
