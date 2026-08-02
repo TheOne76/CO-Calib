@@ -1,0 +1,12 @@
+sync_tolerance_ms: 10.0
+cameras:
+  - id: cam0
+    topic: /camera_0/image_compressed
+    model: omni-none
+    directory: cam0
+    frame_id: camera_0
+  - id: cam1
+    topic: /camera_1/image_compressed
+    model: omni-none
+    directory: cam1
+    frame_id: camera_1

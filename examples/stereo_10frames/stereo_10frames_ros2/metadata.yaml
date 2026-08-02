@@ -1,0 +1,36 @@
+rosbag2_bagfile_information:
+  compression_format: ''
+  compression_mode: ''
+  custom_data: {}
+  duration:
+    nanoseconds: 900000000
+  files:
+  - duration:
+      nanoseconds: 900000000
+    message_count: 20
+    path: stereo_10frames_ros2.db3
+    starting_time:
+      nanoseconds_since_epoch: 1700000000000000000
+  message_count: 20
+  relative_file_paths:
+  - stereo_10frames_ros2.db3
+  ros_distro: rosbags
+  starting_time:
+    nanoseconds_since_epoch: 1700000000000000000
+  storage_identifier: sqlite3
+  topics_with_message_count:
+  - message_count: 10
+    topic_metadata:
+      name: /camera_0/image_compressed
+      offered_qos_profiles: []
+      serialization_format: cdr
+      type: sensor_msgs/msg/CompressedImage
+      type_description_hash: RIHS01_15640771531571185e2efc8a100baf923961a4d15d5569652e6cb6691e8e371a
+  - message_count: 10
+    topic_metadata:
+      name: /camera_1/image_compressed
+      offered_qos_profiles: []
+      serialization_format: cdr
+      type: sensor_msgs/msg/CompressedImage
+      type_description_hash: RIHS01_15640771531571185e2efc8a100baf923961a4d15d5569652e6cb6691e8e371a
+  version: 9

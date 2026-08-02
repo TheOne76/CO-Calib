@@ -1,0 +1,14 @@
+name: omnicalib-open
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+      - numpy>=2,<3
+      - opencv-python>=4.12
+      - onnxruntime-gpu; platform_system == "Linux" and platform_machine == "x86_64"
+      - onnxruntime; platform_system != "Linux" or platform_machine != "x86_64"
+      - PyYAML
+      - rosbags
+      - -e .

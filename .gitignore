@@ -3,3 +3,9 @@ node_modules/
 dist/
 build/
 tmp/
+outputs/
+*.egg-info/
+__pycache__/
+.pytest_cache/
+!examples/stereo_10frames/stereo_10frames_ros1.bag
+!examples/stereo_10frames/stereo_10frames_ros2/stereo_10frames_ros2.db3

@@ -1,11 +1,249 @@
-# CO-Calib
+# OmniCalib Open
 
-Official project repository for **Observation Quality Matters: Robust Multi-Fisheye Calibration via Failure-Oriented Analysis**.
+English | [简体中文](README.zh-CN.md)
 
-The GitHub Pages project page lives in [`docs/`](docs/). After pushing to GitHub, enable Pages with:
+[Project website](https://hkust-aerial-robotics.github.io/CO-Calib/)
 
-- Source: `Deploy from a branch`
-- Branch: `main`
-- Folder: `/docs`
+OmniCalib Open supports rigs with any number of cameras. It automatically detects the input format, detects the calibration target, runs Datawash, generates a standard ROS1 calibration bag, and launches Kalibr calibration.
 
-The initial page includes the dataset hero image and an interactive real-world extrinsic visualization. Method and success-rate figures are left as placeholders until the final assets are added.
+Users only need to provide:
+
+- An image sequence, ROS1 bag, or ROS2 bag
+- `rig.yaml`
+- `datawash.yaml`
+- `target.yaml`
+- The detector and compute device
+
+## 1. Installation
+
+Requirements: Linux, Conda, and Docker. NN-Detector GPU inference also requires a working NVIDIA driver.
+
+```bash
+cd Opensource
+conda env create -f environment.yml
+conda activate omnicalib-open
+```
+
+Pull the published Kalibr image and assign the default image name used by OmniCalib:
+
+```bash
+docker pull hkustswarm/co-calib:v1.0
+docker tag hkustswarm/co-calib:v1.0 omnicalib-kalibr:latest
+```
+
+Regular users do not need to compile Kalibr.
+
+## 2. One-command Calibration
+
+### NN-Detector with GPU
+
+This is the recommended configuration:
+
+```bash
+omnicalib run \
+  --input /path/to/sequence_or_bag \
+  --rig /path/to/rig.yaml \
+  --datawash /path/to/datawash.yaml \
+  --target /path/to/target.yaml \
+  --detector NN-Detector \
+  --device gpu
+```
+
+If the CUDA provider is unavailable or fails to initialize, OmniCalib automatically falls back to CPU and continues the same run.
+
+To explicitly use CPU inference:
+
+```bash
+omnicalib run \
+  --input /path/to/sequence_or_bag \
+  --rig /path/to/rig.yaml \
+  --datawash /path/to/datawash.yaml \
+  --target /path/to/target.yaml \
+  --detector NN-Detector \
+  --device cpu
+```
+
+`--device auto` is the default. It tries GPU first and falls back to CPU. `NN-Detector` is also the default detector, so both options may be omitted.
+
+### ACV-Detector
+
+```bash
+omnicalib run \
+  --input /path/to/sequence_or_bag \
+  --rig /path/to/rig.yaml \
+  --datawash /path/to/datawash.yaml \
+  --target /path/to/target.yaml \
+  --detector ACV-Detector \
+  --device cpu
+```
+
+The selected detector is used consistently by both Datawash and final calibration. ACV-Detector runs on CPU inside the Kalibr container.
+
+By default, results are written beside the input as `<input-name>_omnicalib/`. Use `--output /path/to/output` to select another directory. Add `--overwrite` to replace an existing result directory.
+
+## 3. Input Data
+
+OmniCalib automatically recognizes the following formats from `--input`.
+
+### Image sequence
+
+```text
+sequence/
+├── cam0/
+│   ├── images/
+│   │   ├── 000000.png
+│   │   └── ...
+│   └── timestamps.csv
+├── cam1/
+│   ├── images/
+│   └── timestamps.csv
+└── camN/
+    ├── images/
+    └── timestamps.csv
+```
+
+Each camera requires an image directory and a `timestamps.csv` file:
+
+```csv
+frame_id,timestamp_ns,filename
+0,1700000000000000000,000000.png
+1,1700000000100000000,000001.png
+```
+
+PNG, JPEG, BMP, and TIFF images are supported. Cameras do not need identical frame rates. Frames are grouped using the synchronization tolerance in `rig.yaml`.
+
+### ROS1 bag
+
+Pass one `.bag` file to `--input`. Both `sensor_msgs/Image` and `sensor_msgs/CompressedImage` are supported.
+
+### ROS2 bag
+
+Pass a rosbag2 directory containing `metadata.yaml` to `--input`. Both `sensor_msgs/Image` and `sensor_msgs/CompressedImage` are supported.
+
+`examples/stereo_10frames/` contains equivalent image-sequence, ROS1, and ROS2 examples with 10 frames per camera.
+
+## 4. Configuration
+
+### rig.yaml
+
+`rig.yaml` defines camera count, topics, sequence directories, and camera models:
+
+```yaml
+sync_tolerance_ms: 10.0
+cameras:
+  - id: cam0
+    topic: /camera_0/image_compressed
+    model: omni-none
+    directory: cam0
+    frame_id: camera_0
+  - id: cam1
+    topic: /camera_1/image_compressed
+    model: omni-none
+    directory: cam1
+    frame_id: camera_1
+```
+
+Add more `cameras` entries for larger rigs. Every `id` and `topic` must be unique, and `directory` must match the corresponding image-sequence directory. Supported models:
+
+- `pinhole-radtan`
+- `pinhole-equi`
+- `pinhole-fov`
+- `omni-none`
+- `omni-radtan`
+- `eucm-none`
+- `ds-none`
+
+### datawash.yaml
+
+```yaml
+detector_confidence: 0.99
+sample_min_detection_points: 12
+
+selection:
+  anchor:
+    radial_span: 0.25
+    iso: 0.50
+    budget: 0
+  covisible:
+    radial_span: 0.00
+    iso: 0.30
+    budget: 100
+  mono_fill:
+    radial_span: 0.20
+    iso: 0.30
+    budget: 0
+```
+
+- `detector_confidence`: Minimum confidence for a detected point.
+- `sample_min_detection_points`: Minimum number of valid points required for an image to enter selection.
+- `radial_span`: Minimum normalized radial span of the calibration target in the valid image region.
+- `iso`: Projection-Jacobian isotropy threshold. Values closer to `1` are stricter.
+- `budget`: Per-camera limit for anchor and mono fill, and per-camera-pair limit for covisible. `0` disables the hard limit.
+
+### target.yaml
+
+The current detectors target a 6 x 6 AprilGrid:
+
+```yaml
+target_type: aprilgrid
+tagCols: 6
+tagRows: 6
+tagSize: 0.055
+tagSpacing: 0.3
+```
+
+`tagSize` and `tagSpacing` must match the printed target.
+
+Editable example configurations are provided in:
+
+- `configs/rig_stereo.yaml`
+- `configs/datawash.yaml`
+- `configs/target_aprilgrid_6x6.yaml`
+
+## 5. Output
+
+```text
+<input-name>_omnicalib/
+├── datawash/
+│   ├── calibration_clean.bag
+│   ├── selected_roles.csv
+│   └── summary.json
+├── kalibr/
+│   ├── calibration-camchain.yaml
+│   ├── calibration-results-cam.txt
+│   └── calibration-report-cam.pdf
+└── summary.json
+```
+
+`selected_roles.csv` records anchor, covisible, and mono-fill selections. Its `active_cameras` field lists the cameras actually used at each timestamp.
+
+## 6. Extrinsic Visualization
+
+The browser visualizer in `visualization/` displays the multi-camera extrinsics from Kalibr's `calibration-camchain.yaml`. All YAML parsing happens locally in the browser and no calibration data is uploaded.
+
+From the `Opensource/` repository root, create the visualization environment and start the server:
+
+```bash
+cd visualization
+conda env create -f environment.yml
+conda activate kalibr-visualizer
+python -m http.server 8765 --bind 127.0.0.1
+```
+
+Open `http://127.0.0.1:8765/` and select or drag the generated file:
+
+```text
+<input-name>_omnicalib/kalibr/calibration-camchain.yaml
+```
+
+The visualizer shows camera frustums, camera axes, adjacent baselines, distances, a world grid, and a camera-pose table. It supports any contiguous `cam0`, `cam1`, ..., `camN` chain whose cameras after `cam0` provide a 4 x 4 `T_cn_cnm1` transform.
+
+Controls:
+
+- Left drag: orbit
+- Right drag or Alt + drag: pan
+- Mouse wheel: zoom
+- `Reset view`: restore the default view
+- `Fit rig`: fit all cameras into the viewport
+
+Stop the local server with `Ctrl+C`.

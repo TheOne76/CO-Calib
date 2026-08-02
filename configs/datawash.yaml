@@ -1,0 +1,21 @@
+# NN-Detector keeps points whose confidence is at least this value.
+detector_confidence: 0.99
+
+# Every selected camera observation must contain at least this many valid points.
+sample_min_detection_points: 12
+
+selection:
+  anchor:
+    radial_span: 0.25
+    iso: 0.50
+    budget: 0       # Per camera; 0 means no hard limit.
+
+  covisible:
+    radial_span: 0.00
+    iso: 0.30
+    budget: 100     # Per camera pair; 0 means no hard limit.
+
+  mono_fill:
+    radial_span: 0.20
+    iso: 0.30
+    budget: 0       # Per camera; 0 means no hard limit.

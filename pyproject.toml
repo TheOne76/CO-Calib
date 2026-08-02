@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "omnicalib-open"
+version = "0.1.0"
+description = "NN-Detector and arbitrary-camera calibration Datawash"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy>=2,<3",
+  "opencv-python>=4.12",
+  "onnxruntime-gpu; platform_system == 'Linux' and platform_machine == 'x86_64'",
+  "onnxruntime; platform_system != 'Linux' or platform_machine != 'x86_64'",
+  "PyYAML",
+  "rosbags",
+]
+
+[project.scripts]
+omnicalib = "omnicalib_open.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
