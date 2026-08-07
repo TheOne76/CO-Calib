@@ -1,10 +1,27 @@
-# OmniCalib Open
+# CO-Calib
 
 English | [简体中文](README.zh-CN.md)
 
-[Project website](https://hkust-aerial-robotics.github.io/CO-Calib/)
+<div align="left">
+        <!-- <h3>Observation Quality Matters: Robust Multi-Fisheye Calibration via Failure-Oriented Analysis</h3> -->
+        <a href="https://uav.hkust.edu.hk/current-members/" target="_blank">Peize Liu</a>,
+        Zhe Tong,
+        <a href="https://chen-albert-feng.github.io/AlbertFeng.github.io/" target="_blank">Chen Feng</a><sup>†</sup>, and
+        <a href="https://uav.hkust.edu.hk/group/" target="_blank">Shaojie Shen</a>
+    <p>
+        <h45>
+            HKUST Aerial Robotics Group &nbsp;&nbsp;
+            <br>
+        </h5>
+        <sup>†</sup>Corresponding Author
+    </p>
+    <a href='https://arxiv.org/abs/2607.05777'><img src='https://img.shields.io/badge/arXiv-COCalib-red' alt='arxiv'></a>
+    <a href='https://peize-liu.github.io/CO-Calib-IO/'><img src='https://img.shields.io/badge/Project_Page-COCalib-green' alt='Project Page'></a>
+    <a href="https://www.bilibili.com/video/BV1AqMi6AERS/?spm_id_from=333.1387.list.card_archive.click&vd_source=0af61c122e5e37c944053b57e313025a"><img alt="Bilibili" src="https://img.shields.io/badge/Video-Bilibili-blue"/></a>
+    <a href="https://www.youtube.com/watch?v=EskcF2ODnSw"><img alt="Youtube" src="https://img.shields.io/badge/Video-Youtube-red"/></a>
+</div>
 
-OmniCalib Open supports rigs with any number of cameras. It automatically detects the input format, detects the calibration target, runs Datawash, generates a standard ROS1 calibration bag, and launches Kalibr calibration.
+CO-Calib supports rigs with any number of cameras. It automatically detects the input format, detects the calibration target, runs Datawash, generates a standard ROS1 calibration bag, and launches Kalibr calibration.
 
 Users only need to provide:
 
