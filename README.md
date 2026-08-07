@@ -264,3 +264,15 @@ Controls:
 - `Fit rig`: fit all cameras into the viewport
 
 Stop the local server with `Ctrl+C`.
+
+## 7. Citation
+
+Please cite our paper if you use this project in your research:
+```
+@article{liu2026observation,
+  title={Observation Quality Matters: Robust Multi-Fisheye Calibration via Failure-Oriented Analysis},
+  author={Liu, Peize and Tong, Zhe and Feng, Chen and Shen, Shaojie},
+  journal={arXiv preprint arXiv:2607.05777},
+  year={2026}
+}
+```
